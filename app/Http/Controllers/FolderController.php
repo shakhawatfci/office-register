@@ -37,7 +37,27 @@ class FolderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+         'box' => 'required',
+         'folder_name' => 'required'
+        ]);
+
+        try{
+          
+          $folder = new Folder;
+          $folder->folder_name = $request->folder_name;
+          $folder->box_id = $request->box;
+          $folder->description = $request->description;
+          $folder->save();
+
+          return response()->json(['status'=>'success','message'=>'Folder Created']);
+               
+        }
+        catch(Exception $e){
+          
+          return response()->json(['status'=>'success','message'=>'Something Went Wrong !']);
+
+        }
     }
 
     /**

@@ -17930,7 +17930,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       form: {
 
-        box_name: '',
+        box: '',
+        folder_name: '',
         description: ''
 
       },
@@ -17948,13 +17949,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       // for changing submit button text 
       this.submeting = true;
-      axios.post(base_url + 'box', this.form).then(function (response) {
+      axios.post(base_url + 'folder', this.form).then(function (response) {
 
         if (response.data.status === 'success') {
-          __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit('box-created');
+          __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit('folder-created');
           _this.successMessage(response.data);
           _this.resetForm();
-          $('#modalBox').modal('hide');
+          $('#folderModal').modal('hide');
         } else {
 
           _this.successMessage(response.data);
@@ -17976,7 +17977,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     resetForm: function resetForm() {
 
       this.form = {
-        box_name: '',
+        box: '',
+        folder_name: '',
         descripion: ''
       };
       this.errors = null;
@@ -18033,7 +18035,8 @@ var render = function() {
                         { staticClass: "md-form form-sm" },
                         _vm._l(_vm.errors, function(error) {
                           return _c("span", { staticClass: "text-danger" }, [
-                            _vm._v(_vm._s(error[0]))
+                            _vm._v(_vm._s(error[0])),
+                            _c("br")
                           ])
                         }),
                         0
@@ -18043,9 +18046,38 @@ var render = function() {
                   _c("div", { staticClass: "md-form form-sm" }, [
                     _c(
                       "select",
-                      { staticClass: "browser-default custom-select " },
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.box,
+                            expression: "form.box"
+                          }
+                        ],
+                        staticClass: "browser-default custom-select ",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.form,
+                              "box",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
                       [
-                        _c("option", { attrs: { selected: "" } }, [
+                        _c("option", { attrs: { value: "" } }, [
                           _vm._v("Chose a box")
                         ]),
                         _vm._v(" "),
@@ -18069,19 +18101,19 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.form.box_name,
-                          expression: "form.box_name"
+                          value: _vm.form.folder_name,
+                          expression: "form.folder_name"
                         }
                       ],
                       staticClass: "form-control form-control-sm",
                       attrs: { type: "text", id: "materialFormNameModalEx1" },
-                      domProps: { value: _vm.form.box_name },
+                      domProps: { value: _vm.form.folder_name },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.$set(_vm.form, "box_name", $event.target.value)
+                          _vm.$set(_vm.form, "folder_name", $event.target.value)
                         }
                       }
                     }),
@@ -18089,7 +18121,7 @@ var render = function() {
                     _c(
                       "label",
                       { attrs: { for: "materialFormNameModalEx1" } },
-                      [_vm._v("Box Titel *")]
+                      [_vm._v("Folder Titel *")]
                     )
                   ]),
                   _vm._v(" "),

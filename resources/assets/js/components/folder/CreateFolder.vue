@@ -18,14 +18,14 @@
 					<div class="modal-body">
 						<form @submit.prevent="submit()">
 							<div class="md-form form-sm" v-if="errors">
-								<span class="text-danger" v-for="error in errors" >{{ error[0] }}</span>
+								<span class="text-danger" v-for="error in errors" >{{ error[0] }}<br></span>
 							</div>
 							<div class="md-form form-sm">
 								<!-- <i class="fa fa-file-signature prefix"></i> -->
 								
 								<!-- <label for="materialFormNameModalEx1">Box Titel *</label> -->
-								<select class="browser-default custom-select ">
-									<option selected>Chose a box</option>
+								<select v-model="form.box" class="browser-default custom-select ">
+									<option value="">Chose a box</option>
 									<option v-for="(box,index) in boxes" :key="index" :value="box.id">{{ box.box_name }}</option>
 					
 								</select>
@@ -33,8 +33,8 @@
 
 							<div class="md-form form-sm">
 								<i class="fa fa-file-signature prefix"></i>
-								<input v-model="form.box_name" type="text" id="materialFormNameModalEx1" class="form-control form-control-sm">
-								<label for="materialFormNameModalEx1">Box Titel *</label>
+								<input v-model="form.folder_name" type="text" id="materialFormNameModalEx1" class="form-control form-control-sm">
+								<label for="materialFormNameModalEx1">Folder Titel *</label>
 							</div>
 
 
@@ -77,7 +77,8 @@
 
 					form : {
 
-						box_name : '',
+						box : '',
+						folder_name : '',
 						description : ''
 
 					},
@@ -93,14 +94,14 @@
 				submit(){
            // for changing submit button text 
            this.submeting = true;
-           axios.post(base_url+'box',this.form)
+           axios.post(base_url+'folder',this.form)
            .then(response => {
 
            	if(response.data.status === 'success'){
-                EventBus.$emit('box-created');
+                EventBus.$emit('folder-created');
            		this.successMessage(response.data);
            		this.resetForm();
-           		$('#modalBox').modal('hide');               
+           		$('#folderModal').modal('hide');               
            	  }
            	else{
 
@@ -130,7 +131,8 @@
        resetForm(){
 
        	this.form = {
-       		box_name : '',
+       		box : '',
+       		folder_name : '',
        		descripion : ''
        	}
        	this.errors = null;
