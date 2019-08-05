@@ -1,8 +1,18 @@
 <template>
 	<div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input @keyup="getData()" v-model="keyword" type="text" class="form-control" name="" placeholder="Search Box">
+          </div>
+        </div>    
+
+        <div class="col-md-4">
         	<div class="form-group">
-        		<input @keyup="getData()" v-model="keyword" type="text" class="form-control" name="" placeholder="Search Box">
+        		  <select @change="getData()" v-model="box" class="browser-default custom-select ">
+                  <option value="">Filter By Box</option>
+                  <option v-for="(box,index) in boxes" :key="index" :value="box.id">{{ box.box_name }}</option>
+          
+                </select>
         	</div>
         </div> 
         <div class="col-md-12" v-if="!isLoading">
@@ -10,7 +20,8 @@
 			<table class="table   table-condensed">
 				<thead >
 					<tr>
-						<th>Box Name</th>
+            <th>Folder Name</th>
+						<th>Box</th>
 						<th>Note</th>
 						<th>Edit</th>
 						<th>Delete</th>
@@ -18,17 +29,18 @@
 				</thead>
 
 				<tbody>
-					<tr v-for="(box,index) in boxes.data" :key="index">
-						<td>{{ box.box_name }}</td>
-						<td>{{ box.description }}</td>
-						<td><a @click.prevent="editBox(box.id)" class="btn-floating btn-primary" href="" data-toggle="modal" data-target="#updateBox"><i class="fa fa-pen"></i></a></td>
-						<td><a @click.prevent="deleteBox(box.id)" class="btn-floating btn-danger" href=""><i class="fa fa-trash"></i></a></td>
+					<tr v-for="(folder,index) in folders.data" :key="index">
+            <td>{{ folder.folder_name }}</td>
+						<td>{{ folder.box.box_name }}</td>
+						<td>{{ folder.description }}</td>
+						<td><a @click.prevent="editFolder(folder.id)" class="btn-floating btn-primary" href="" data-toggle="modal" data-target="#updateFolder"><i class="fa fa-pen"></i></a></td>
+						<td><a @click.prevent="deleteBox(folder.id)" class="btn-floating btn-danger" href=""><i class="fa fa-trash"></i></a></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<div class="wrap text-right">
-			<pagination :pageData="boxes"></pagination>
+			<pagination :pageData="folders"></pagination>
 		</div>
         </div>
 
@@ -37,7 +49,7 @@
         </div>
 
         <div class="col-md-12">
-        	<update-folder></update-folder>
+        	<update-folder :boxes="boxes"></update-folder>
         </div>
 		
 		
@@ -51,6 +63,7 @@
 	import UpdateFolder from './UpdateFolder.vue';
 	export default{
        mixins : [Mixin],
+       props : ['boxes'],
        components : {
         'pagination' : Pagination,
         'update-folder' : UpdateFolder
@@ -58,9 +71,10 @@
        data(){
        	
        	return {
-          
+    
           keyword : '',
-          boxes : [],
+          box : '',
+          folders : [],
           isLoading : false,
           url : base_url
 
@@ -71,7 +85,7 @@
        	this.getData();
           
          var _this = this;
-         EventBus.$on('box-created',() => {
+         EventBus.$on('folder-created',() => {
             
             _this.getData();
 
@@ -81,9 +95,9 @@
        methods : {
        	getData(page = 1){
         this.isLoading = true;
-        axios.get(base_url+'box-list?page='+page+'&keyword='+this.keyword)
+        axios.get(base_url+'folder-list?page='+page+'&box='+this.box+'&keyword='+this.keyword)
         .then(response => {
-          this.boxes = response.data;
+          this.folders = response.data;
           this.isLoading = false;
         });
 
@@ -108,17 +122,17 @@
         () => {}
       ).then(result => {
         if (result.value) {
-          axios.delete(base_url + "box/" + id).then(res => {
-            EventBus.$emit("box-created",);
+          axios.delete(base_url + "folder/" + id).then(res => {
+            EventBus.$emit("folder-created",);
             this.successMessage(res.data);
           });
         }
       });
     },
 
-      editBox(id){
+      editFolder(id){
           
-          EventBus.$emit('update-box',id);
+          EventBus.$emit('update-folder',id);
      
        }
 

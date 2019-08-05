@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Folder;
+use App\File;
 use App\Box;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,31 @@ class FolderController extends Controller
     { 
         $box = Box::orderBy('box_name','ASC')->get();
         return view('pages.folder',['box'=>$box]);
+    }
+
+
+    public function folderList(Request $request){
+
+           $keyword = $request->keyword;
+           $box = $request->box;
+
+           $folder = Folder::with('box:id,box_name')->orderBy('folder_name','asc');
+
+           if($keyword != ''){
+
+             $folder->where('folder_name','LIKE','%'.$keyword.'%');
+           
+           }
+
+           if($box){
+              
+              $folder->where('box_id','=',$box);
+           }
+
+           $folder = $folder->paginate(10);
+
+           return $folder;
+
     }
 
     /**
@@ -79,7 +105,7 @@ class FolderController extends Controller
      */
     public function edit(Folder $folder)
     {
-        //
+        return $folder;
     }
 
     /**
@@ -91,7 +117,27 @@ class FolderController extends Controller
      */
     public function update(Request $request, Folder $folder)
     {
-        //
+       $request->validate([
+         'box' => 'required',
+         'folder_name' => 'required'
+        ]);
+
+        try{
+          
+          
+          $folder->folder_name = $request->folder_name;
+          $folder->box_id = $request->box;
+          $folder->description = $request->description;
+          $folder->update();
+
+          return response()->json(['status'=>'success','message'=>'Folder Created']);
+               
+        }
+        catch(Exception $e){
+          
+          return response()->json(['status'=>'success','message'=>'Something Went Wrong !']);
+
+        }
     }
 
     /**
@@ -102,6 +148,15 @@ class FolderController extends Controller
      */
     public function destroy(Folder $folder)
     {
-        //
+        $check = File::where('folder_id','=',$folder->id)->get();
+
+        if(count($check) > 0){
+
+            return response()->json(['status'=>'error','message'=>'Opps The folder have some file in it']);
+        }
+
+        $folder->delete();
+        return response()->json(['status'=>'success','message'=>'Folder Deleted']);
+
     }
 }

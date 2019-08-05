@@ -24,6 +24,8 @@ Route::get('box-list','BoxController@boxList');
 
 Route::resource('folder','FolderController');
 
+Route::get('folder-list','FolderController@folderList');
+
 Route::resource('file','FileController');
 
 Route::resource('document','DocumentController');

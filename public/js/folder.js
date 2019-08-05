@@ -18325,6 +18325,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -18332,6 +18344,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [__WEBPACK_IMPORTED_MODULE_1__mixin__["a" /* default */]],
+  props: ['boxes'],
   components: {
     'pagination': __WEBPACK_IMPORTED_MODULE_2__pagination_Pagination_vue___default.a,
     'update-folder': __WEBPACK_IMPORTED_MODULE_3__UpdateFolder_vue___default.a
@@ -18341,7 +18354,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     return {
 
       keyword: '',
-      boxes: [],
+      box: '',
+      folders: [],
       isLoading: false,
       url: base_url
 
@@ -18352,7 +18366,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     this.getData();
 
     var _this = this;
-    __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$on('box-created', function () {
+    __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$on('folder-created', function () {
 
       _this.getData();
     });
@@ -18365,8 +18379,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
       this.isLoading = true;
-      axios.get(base_url + 'box-list?page=' + page + '&keyword=' + this.keyword).then(function (response) {
-        _this2.boxes = response.data;
+      axios.get(base_url + 'folder-list?page=' + page + '&box=' + this.box + '&keyword=' + this.keyword).then(function (response) {
+        _this2.folders = response.data;
         _this2.isLoading = false;
       });
     },
@@ -18387,16 +18401,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         confirmButtonText: "Yes, delete it!"
       }, function () {}).then(function (result) {
         if (result.value) {
-          axios.delete(base_url + "box/" + id).then(function (res) {
-            __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit("box-created");
+          axios.delete(base_url + "folder/" + id).then(function (res) {
+            __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit("folder-created");
             _this3.successMessage(res.data);
           });
         }
       });
     },
-    editBox: function editBox(id) {
+    editFolder: function editFolder(id) {
 
-      __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit('update-box', id);
+      __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit('update-folder', id);
     }
   }
 });
@@ -18510,6 +18524,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -18517,6 +18543,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
 
   mixins: [__WEBPACK_IMPORTED_MODULE_1__mixin__["a" /* default */]],
+  props: ['boxes'],
 
   data: function data() {
 
@@ -18524,7 +18551,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       form: {
         id: '',
-        box_name: '',
+        folder_name: '',
+        box: '',
         description: ''
 
       },
@@ -18537,7 +18565,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   created: function created() {
     var _this = this;
-    __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$on('update-box', function (id) {
+    __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$on('update-folder', function (id) {
       _this.form.id = id;
       _this.getEditData(id);
     });
@@ -18548,8 +18576,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     getEditData: function getEditData(id) {
       var _this2 = this;
 
-      axios.get(base_url + 'box/' + id + '/edit').then(function (response) {
-        _this2.form.box_name = response.data.box_name;
+      axios.get(base_url + 'folder/' + id + '/edit').then(function (response) {
+        _this2.form.folder_name = response.data.folder_name;
+        _this2.form.box = response.data.box_id;
         _this2.form.description = response.data.description;
       });
     },
@@ -18557,13 +18586,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this3 = this;
 
       this.submeting = true;
-      axios.put(base_url + 'box/' + this.form.id, this.form).then(function (response) {
+      axios.put(base_url + 'folder/' + this.form.id, this.form).then(function (response) {
 
         if (response.data.status === 'success') {
-          __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit('box-created');
+          __WEBPACK_IMPORTED_MODULE_0__vue_asset__["EventBus"].$emit('folder-created');
           _this3.successMessage(response.data);
           _this3.resetForm();
-          $('#updateBox').modal('hide');
+          $('#updateFolder').modal('hide');
         } else {
 
           _this3.successMessage(response.data);
@@ -18586,7 +18615,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       this.form = {
         id: '',
-        box_name: '',
+        folder_name: '',
+        box: '',
         descripion: ''
       };
       this.errors = null;
@@ -18608,7 +18638,7 @@ var render = function() {
     {
       staticClass: "modal fade",
       attrs: {
-        id: "updateBox",
+        id: "updateFolder",
         tabindex: "-1",
         role: "dialog",
         "aria-labelledby": "myModalLabel",
@@ -18644,12 +18674,63 @@ var render = function() {
                         { staticClass: "md-form form-sm" },
                         _vm._l(_vm.errors, function(error) {
                           return _c("span", { staticClass: "text-danger" }, [
-                            _vm._v(_vm._s(error[0]))
+                            _vm._v(_vm._s(error[0])),
+                            _c("br")
                           ])
                         }),
                         0
                       )
                     : _vm._e(),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "md-form form-sm" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.box,
+                            expression: "form.box"
+                          }
+                        ],
+                        staticClass: "browser-default custom-select ",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.form,
+                              "box",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("Chose a box")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.boxes, function(box, index) {
+                          return _c(
+                            "option",
+                            { key: index, domProps: { value: box.id } },
+                            [_vm._v(_vm._s(box.box_name))]
+                          )
+                        })
+                      ],
+                      2
+                    )
+                  ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "md-form form-sm" }, [
                     _c("i", { staticClass: "fa fa-file-signature prefix" }),
@@ -18659,19 +18740,19 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.form.box_name,
-                          expression: "form.box_name"
+                          value: _vm.form.folder_name,
+                          expression: "form.folder_name"
                         }
                       ],
                       staticClass: "form-control form-control-sm",
                       attrs: { type: "text", id: "materialFormNameModalEx1" },
-                      domProps: { value: _vm.form.box_name },
+                      domProps: { value: _vm.form.folder_name },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.$set(_vm.form, "box_name", $event.target.value)
+                          _vm.$set(_vm.form, "folder_name", $event.target.value)
                         }
                       }
                     }),
@@ -18679,7 +18760,7 @@ var render = function() {
                     _c(
                       "label",
                       { attrs: { for: "materialFormNameModalEx1" } },
-                      [_vm._v("Box Titel *")]
+                      [_vm._v("folder Titel *")]
                     )
                   ]),
                   _vm._v(" "),
@@ -18750,8 +18831,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header pink darken-4 white-text" }, [
       _c("h4", { staticClass: "title" }, [
-        _c("i", { staticClass: "fa fa-box-open" }),
-        _vm._v(" Update Box")
+        _c("i", { staticClass: "fa fa-folder-open" }),
+        _vm._v(" Update folder")
       ]),
       _vm._v(" "),
       _c(
@@ -18787,7 +18868,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col-md-6" }, [
+    _c("div", { staticClass: "col-md-4" }, [
       _c("div", { staticClass: "form-group" }, [
         _c("input", {
           directives: [
@@ -18816,6 +18897,55 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
+    _c("div", { staticClass: "col-md-4" }, [
+      _c("div", { staticClass: "form-group" }, [
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.box,
+                expression: "box"
+              }
+            ],
+            staticClass: "browser-default custom-select ",
+            on: {
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.box = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                function($event) {
+                  return _vm.getData()
+                }
+              ]
+            }
+          },
+          [
+            _c("option", { attrs: { value: "" } }, [_vm._v("Filter By Box")]),
+            _vm._v(" "),
+            _vm._l(_vm.boxes, function(box, index) {
+              return _c("option", { key: index, domProps: { value: box.id } }, [
+                _vm._v(_vm._s(box.box_name))
+              ])
+            })
+          ],
+          2
+        )
+      ])
+    ]),
+    _vm._v(" "),
     !_vm.isLoading
       ? _c("div", { staticClass: "col-md-12" }, [
           _c("div", { staticClass: "table-responsive" }, [
@@ -18824,11 +18954,13 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.boxes.data, function(box, index) {
+                _vm._l(_vm.folders.data, function(folder, index) {
                   return _c("tr", { key: index }, [
-                    _c("td", [_vm._v(_vm._s(box.box_name))]),
+                    _c("td", [_vm._v(_vm._s(folder.folder_name))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(box.description))]),
+                    _c("td", [_vm._v(_vm._s(folder.box.box_name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(folder.description))]),
                     _vm._v(" "),
                     _c("td", [
                       _c(
@@ -18838,12 +18970,12 @@ var render = function() {
                           attrs: {
                             href: "",
                             "data-toggle": "modal",
-                            "data-target": "#updateBox"
+                            "data-target": "#updateFolder"
                           },
                           on: {
                             click: function($event) {
                               $event.preventDefault()
-                              return _vm.editBox(box.id)
+                              return _vm.editFolder(folder.id)
                             }
                           }
                         },
@@ -18860,7 +18992,7 @@ var render = function() {
                           on: {
                             click: function($event) {
                               $event.preventDefault()
-                              return _vm.deleteBox(box.id)
+                              return _vm.deleteBox(folder.id)
                             }
                           }
                         },
@@ -18877,7 +19009,7 @@ var render = function() {
           _c(
             "div",
             { staticClass: "wrap text-right" },
-            [_c("pagination", { attrs: { pageData: _vm.boxes } })],
+            [_c("pagination", { attrs: { pageData: _vm.folders } })],
             1
           )
         ])
@@ -18885,7 +19017,12 @@ var render = function() {
           _c("img", { attrs: { src: _vm.url + "img/loading.gif" } })
         ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-md-12" }, [_c("update-folder")], 1)
+    _c(
+      "div",
+      { staticClass: "col-md-12" },
+      [_c("update-folder", { attrs: { boxes: _vm.boxes } })],
+      1
+    )
   ])
 }
 var staticRenderFns = [
@@ -18895,7 +19032,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("Box Name")]),
+        _c("th", [_vm._v("Folder Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Box")]),
         _vm._v(" "),
         _c("th", [_vm._v("Note")]),
         _vm._v(" "),
