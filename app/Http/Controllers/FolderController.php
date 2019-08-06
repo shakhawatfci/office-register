@@ -159,4 +159,16 @@ class FolderController extends Controller
         return response()->json(['status'=>'success','message'=>'Folder Deleted']);
 
     }
+
+    // find folder by the box 
+
+    public function findFolder($box_id){
+        
+        $folder = Folder::where('box_id',$box_id)
+                          ->orderBy('folder_name','asc')
+                          ->get();
+
+
+        return $folder;
+    }
 }

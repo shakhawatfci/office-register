@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\File;
+use App\Folder;
+use App\Box;
+use App\Document;
+use Exception;
 use Illuminate\Http\Request;
 
 class FileController extends Controller
@@ -14,7 +18,8 @@ class FileController extends Controller
      */
     public function index()
     {
-        //
+        $box = Box::orderBy('name','asc')->get(0);
+        return view('pages.file',['box'=>$box]);
     }
 
     /**
@@ -35,7 +40,26 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+         'box' => 'requried',
+         'folder' => 'requried',
+         'file_name' => 'requried',
+        ]);
+
+        try{
+          $file = new File;
+          $file->folder_id = $request->folder;
+          $file->file_name = $request->file_name;
+          $file->description = $request->description;
+          $file->save();
+
+          return response()->json(['status'=>'success','message'=>'file saved']);
+        }
+        catch(Exception $e){
+            
+          return response()->json(['status'=>'error','message'=>'something went wrong!']);  
+
+        }
     }
 
     /**
@@ -55,9 +79,11 @@ class FileController extends Controller
      * @param  \App\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function edit(File $file)
+    public function edit($id)
     {
-        //
+        $edit_data = File::find($id)->with('folder.box');
+
+        return $edit_data;
     }
 
     /**
@@ -69,7 +95,26 @@ class FileController extends Controller
      */
     public function update(Request $request, File $file)
     {
-        //
+         $request->validate([
+         'box' => 'requried',
+         'folder' => 'requried',
+         'file_name' => 'requried',
+        ]);
+
+        try{
+         
+          $file->folder_id = $request->folder;
+          $file->file_name = $request->file_name;
+          $file->description = $request->description;
+          $file->update();
+
+          return response()->json(['status'=>'success','message'=>'file Updated']);
+        }
+        catch(Exception $e){
+            
+          return response()->json(['status'=>'error','message'=>'something went wrong!']);  
+
+        }
     }
 
     /**
@@ -80,6 +125,15 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        //
+        $doc = Document::where('file_id',$file->id)->get();
+
+        if(count($doc)>0){
+
+            return response()->json(['status'=>'error','message'=>'this file have some document !']);
+        }
+
+        $doc->delete();
+
+        return response()->json(['status'=>'success','message'=>'Deleted !']);
     }
 }

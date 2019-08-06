@@ -26,7 +26,12 @@ Route::resource('folder','FolderController');
 
 Route::get('folder-list','FolderController@folderList');
 
+Route::get('find-folder/{box_id}','FolderController@findFolder');
+
+
 Route::resource('file','FileController');
+
+Route::get('file-list','FileController@fileList');
 
 Route::resource('document','DocumentController');
 
