@@ -18,7 +18,7 @@ class FileController extends Controller
      */
     public function index()
     {
-        $box = Box::orderBy('name','asc')->get(0);
+        $box = Box::orderBy('box_name','asc')->get();
         return view('pages.file',['box'=>$box]);
     }
 
