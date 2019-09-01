@@ -12,4 +12,11 @@ class Folder extends Model
 
     	return $this->belongsTo('App\Box');
     }
+
+    // relation with file 
+
+    public function file(){
+
+        return $this->hasMany('App\File');
+    }
 }
