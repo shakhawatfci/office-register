@@ -117,6 +117,14 @@ class FileController extends Controller
         }
     }
 
+    public function findFile($folder_id){
+          
+        $file = File::where('folder_id','=',$folder_id)->get();
+
+        return $file;
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *

@@ -11,12 +11,12 @@
           <div class="col-md-6"><p class="mt-1">File Management</p></div>
           <div class="col-md-6 text-right">
             <button type="button" class="btn btn-sm  pink darken-4 white-text" data-toggle="modal" data-target="#fileModal">
-             + Create Folder
+             + Create file
            </button></div>
          </div>
 
          <div class="row">
-           <create-folder :boxes="{{ $box }}"></create-folder>
+           <create-file :boxes="{{ $box }}"></create-file>
         </div>
 
 
@@ -24,7 +24,7 @@
         </div>
 
         <div class="card-body">
-          <view-folder :boxes="{{ $box }}"></view-folder>
+          <view-file :boxes="{{ $box }}"></view-file>
         </div>
       </div>
 

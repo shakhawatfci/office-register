@@ -33,9 +33,16 @@ Route::resource('file','FileController');
 
 Route::get('file-list','FileController@fileList');
 
+Route::get('find-file/{folder_id}','FileController@findFile');
+
+
+
 Route::resource('document','DocumentController');
 
 Route::get('logout','GeneralController@logout');
+
+
+
 
 
 });
