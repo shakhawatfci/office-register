@@ -27,6 +27,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+      // relation with documents 
+
+      public function document(){
+        return $this->hasMany('App\Document');
+    } 
+
+    //  facebook login 
 public function addNew($input)
 
     {

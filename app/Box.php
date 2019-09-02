@@ -12,4 +12,10 @@ class Box extends Model
 
     	return $this->hasMany('App\Folder');
     }
+
+    // relation with documents 
+
+    public function document(){
+        return $this->hasMany('App\Document');
+    }
 }

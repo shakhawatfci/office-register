@@ -10,13 +10,22 @@ class Folder extends Model
 
     public function box(){
 
-    	return $this->belongsTo('App\Box');
+    	return $this->belongsTo('App\Box')->withDefault([
+            'id' => 0,
+            'box_name' => 'unknown'
+        ]);
     }
 
     // relation with file 
 
-    public function file(){
+   public function file(){
 
         return $this->hasMany('App\File');
-    }
+     }
+
+    // relation with documents 
+
+   public function document(){
+        return $this->hasMany('App\Document');
+    } 
 }
