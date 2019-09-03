@@ -25,7 +25,7 @@
 								
 								<!-- <label for="materialFormNameModalEx1">Box Titel *</label> -->
 								<select v-model="form.box" class="browser-default custom-select" @change="getFolder()">
-									<option value="">Chose a box</option>
+									<option value="">Chose a box *</option>
 									<option v-for="(box,index) in boxes" :key="index" :value="box.id">{{ box.box_name }}</option>
 					
 								</select>
@@ -36,7 +36,7 @@
 								
 								<!-- <label for="materialFormNameModalEx1">Box Titel *</label> -->
 								<select v-model="form.folder" class="browser-default custom-select ">
-									<option value="">Chose a Folder</option>
+									<option value="">Chose a Folder *</option>
 									<option v-for="(folder,index) in folders"
                                      :key="index" :value="folder.id">
                                      {{ folder.folder_name }}
@@ -47,8 +47,8 @@
 
 							<div class="md-form form-sm">
 								<i class="fa fa-file-signature prefix"></i>
-								<input v-model="form.folder_name" type="text" id="materialFormNameModalEx1" class="form-control form-control-sm">
-								<label for="materialFormNameModalEx1">Folder Titel *</label>
+								<input v-model="form.file_name" type="text" id="materialFormNameModalEx1" class="form-control form-control-sm">
+								<label for="materialFormNameModalEx1">File Titel *</label>
 							</div>
 
 
@@ -93,7 +93,7 @@
 
                         box : '',
                         folder : '',
-						folder_name : '',
+						file_name : '',
 						description : ''
 
                     },
@@ -117,17 +117,17 @@
 
                 },
 
-				submit(){
+		submit(){
            // for changing submit button text 
            this.submeting = true;
-           axios.post(base_url+'folder',this.form)
+           axios.post(base_url+'file',this.form)
            .then(response => {
 
            	if(response.data.status === 'success'){
-                EventBus.$emit('folder-created');
+                EventBus.$emit('file-created');
            		this.successMessage(response.data);
            		this.resetForm();
-           		$('#folderModal').modal('hide');               
+           		$('#fileModal').modal('hide');               
            	  }
            	else{
 
@@ -158,7 +158,8 @@
 
        	this.form = {
        		box : '',
-       		folder_name : '',
+       		folder : '',
+       		file_name : '',
        		descripion : ''
        	}
        	this.errors = null;

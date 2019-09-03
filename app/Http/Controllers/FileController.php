@@ -41,9 +41,9 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-         'box' => 'requried',
-         'folder' => 'requried',
-         'file_name' => 'requried',
+         'box' => 'required',
+         'folder' => 'required',
+         'file_name' => 'required',
         ]);
 
         try{
@@ -96,9 +96,9 @@ class FileController extends Controller
     public function update(Request $request, File $file)
     {
          $request->validate([
-         'box' => 'requried',
-         'folder' => 'requried',
-         'file_name' => 'requried',
+         'box' => 'required',
+         'folder' => 'required',
+         'file_name' => 'required',
         ]);
 
         try{
